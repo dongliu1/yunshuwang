@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户中心</title>
+    <link rel="stylesheet" href="../libs/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../libs/font-awesome/css/font-awesome.min.css">
+    <style>
+        html,body,.ath-contain{width:100%;height: 100%;font-family:"微软雅黑 Light";}
+        .book-list{position: absolute;left:0;top:3.65em;bottom:0;width:15em;background: #eee;border-right:1px solid #aaa;}
+        .chapter-editor{padding:3.65em 0 0 15em;width:100%;height: 100%;}
+        .row{padding:0;margin:0;}
+        .book-icon{padding:0.8em 0;box-shadow:0 3px 5px #ccc ;}
+        #book-menu{margin:0;padding: 0;}
+        #book-menu li{width:100%;cursor:pointer;padding:0.5em;list-style-type:none;border-bottom:1px solid #bbb;}
+        #book-menu i{margin:0 1em;}
+        #book-menu a{color:#555!important;text-decoration: none!important;}
+        #book-menu .li-active,#book-menu .li-active a{background:#1b6d85;color:#fff!important;}
+    </style>
+</head>
+<body>
+<div class="ath-contain">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header" style="cursor: default;">
+                <span class="navbar-brand">作者后台</span>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">书籍目录</a></li>
+                    <li><a href="#">灵感手记</a></li>
+                    <!--<li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">One more separated link</a></li>
+                        </ul>
+                    </li>-->
+                </ul>
+                <form class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input type="text" class="form-control input-sm" placeholder="章节名">
+                    </div>
+                    <button type="submit" class="btn btn-success btn-sm">章节查找</button>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="javascript:void(0)">欢迎</a></li>
+                    <li class="dropdown">
+                        <a href="javascript:void(0)" id="nickname" class="dropdown-toggle" data-toggle="dropdown">#<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="../ysw-reader/index.php">首页</a></li>
+                            <li><a href="javascript:void(0)" onclick="init_author_exit()">退出</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <div class="book-list"></div>
+    <div class="chapter-editor">
+        <iframe id="frameBook" name="frameBook" src="template/inc-book/inc-book.html"
+            width="100%" height="100%"  frameborder="no" border="0" marginwidth="0"
+            marginheight="0" scrolling="no" allowtransparency="yes"></iframe>
+    </div>
+</div>
+<script src="../libs/jquery/jQuery-2.1.4.min.js"></script>
+<script src="../libs/jcookie/jquery.cookie.js"></script>
+<script src="../libs/bootstrap/js/bootstrap.min.js"></script>
+<script>
+    var menu={};
+    $(function () {
+        init_readCookie();
+        init_menu();
+    });
+    function init_readCookie() {
+        var cookie=$.cookie("user_account");
+        if(cookie){
+            $.post("../ysw-api/authentication-api.php",{"account":cookie},function (data) {
+                if(data){
+                    var nickname=window.localStorage.getItem("nickname");
+                    $("#nickname").html(nickname+"<span class=\"caret\"></span>");
+                }else{
+                    location.href="../ysw-reader/index.php";
+                }
+            });
+        }else{
+            location.href="../login.php?account=author";
+        }
+    }
+    function init_menu(){
+        $(".book-list").load("template/inc-booklist/inc-booklist.html",function(){
+
+            $("#book-menu").find("li").off("click").on("click",function(){
+                $("#book-menu").find("li").removeClass("li-active");
+                $(this).addClass("li-active");
+                var book_name=$(this).find("a").text();
+                $("#frameBook")[0].contentWindow.init_tabcontent('[tabid="chapter-menu"]');
+                $("#frameBook").contents().find(".book-name>b").text(book_name);
+            })
+        })
+    }
+    function init_author_exit(){
+        $.removeCookie('user_account', { path: '/' });
+        window.localStorage.removeItem("nickname");
+        location.href="../login.php?account=author";
+    }
+</script>
+</body>
+</html>

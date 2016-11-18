@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>云书网</title>
+	<style>
+	html.body{width:100%;height:100%;margin:0;padding:0;font-family:微软雅黑;}
+	h3{display:inline-block;margin:0;padding:0;}
+	.ysw-contain{width:100%;height:100%;}
+	.ysw-main{width:46em;height:8em;position:absolute;top:50%;left:50%;margin-top:-4em;margin-left:-23em;line-height:8em;}
+	.ysw-enter{width:100%;height:100%;border:1px solid #ccc;border-radius:1em;background:#eee;}
+	.ysw-author,.ysw-reader{float:left;width:50%;height:100%;text-align:center;vertical-align:middle;}
+	.ysw-author:hover,.ysw-reader:hover{background:#bbb;cursor:pointer;}
+	.ysw-author:hover{border-radius:1em 0 0 1em;}
+	.ysw-reader:hover{border-radius:0 1em 1em 0;}
+	.ysw-clear{clear:both;}
+	.ysw-rtline{width:100%;height:100%;border-right:1px solid #ccc;}
+	</style>
+</head>
+<body>
+<div class="ysw-contain">
+	<form method="post" action="" id="ysw-login">
+		<div class="ysw-main">
+			<div class="ysw-enter">
+				<div class="ysw-author" onclick="init_login('ysw-app/login.php?account=author')">
+					<div class="ysw-rtline">
+						<h3>我是作者</h3>
+					</div>
+				</div>
+				<div class="ysw-reader" onclick="init_login('ysw-app/login.php?account=reader')">
+					<h3>我是读者</h3>
+				</div>
+				<div class="ysw-clear"></div>
+			</div>
+		</div>
+	</form>
+</div>
+<script>
+function init_login(url){
+	document.getElementById("ysw-login").action=location.href+url;
+	//console.log(document.getElementById("ysw-login").action);
+	document.getElementById("ysw-login").submit();
+}
+</script>
+</body>
+</html>

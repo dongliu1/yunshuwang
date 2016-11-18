@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>书籍信息</title>
+    <link rel="stylesheet" href="../../../libs/bootstrap/css/bootstrap.min.css">
+    <style>
+        html,body,.book-info-contain{width:100%;height: 100%;}
+        .book-info{min-width: 64em;max-width:90em;width:100%;height: 100%;display: inline-block;padding:4em;}
+        .book-img{-moz-user-select:none;-webkit-user-select:none;cursor:default;width:10em;height: 13em;display: inline-block;box-shadow: 5px 5px 5px #ccc;}
+        .book-img .book-line{box-shadow:inset 3px 0 5px #ccc ;background:#e8ddc9;float:left;border:1px solid #ccc;border-radius: 0.3em 0 0 0.3em;width:1em;height: 100%;}
+        .book-img .book-text{background:#e8ddc9;float:left;width:9em;height: 100%;border:1px solid #ccc;border-left:none;}
+        .book-img .book-name{margin-top:1em;color:#666;}
+        .book-img .bottom-name{margin-top:7.5em;color:#666;}
+        .book-info .row{padding:0;margin: 0;}
+        .book-info a{font-size:2em;font-weight:600;margin-top:1em;display: inline-block;width:6em;border-bottom:1px solid #ccc;color:#777!important;text-decoration: none!important;}
+        .tab-content{height: 100%;}
+        .book-info a.tab-active{color: #3c6692!important;border-bottom-color: #3c6692;}
+        .clear{clear:both;}
+    </style>
+</head>
+<body>
+<div class="book-info-contain text-center">
+    <div class="book-info">
+        <div class="row" style="height: 100%;">
+            <div class="col-sm-4 text-center">
+                <div class="row">
+                    <div class="book-img">
+                        <div class="book-line"></div>
+                        <div class="book-text">
+                            <div class="book-name">
+                                <b>神之猎魔人</b>
+                            </div>
+                            <div class="bottom-name">
+                                <b>－TXT－</b>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <a class="tab-menu tab-active" tabid="chapter-menu" tabhref="../inc-chapterlist/inc-chapterlist.html" href="javascript:void(0)" onclick="init_tabcontent(this)">章节管理</a>
+                </div>
+                <div class="row">
+                    <a class="tab-menu" tabid="add-chapter" tabhref="../inc-chapter/inc-chapter.html" href="javascript:void(0)" onclick="init_tabcontent(this)">新增章节</a>
+                </div>
+                <div class="row">
+                    <a class="tab-menu" tabid="book-about" tabhref="../inc-bookabout/inc-bookabout.html" href="javascript:void(0)" onclick="init_tabcontent(this)">作品相关</a>
+                </div>
+            </div>
+            <div class="col-sm-8 tab-content"></div>
+        </div>
+    </div>
+</div>
+<script src="../../../libs/jquery/jQuery-2.1.4.min.js"></script>
+<script src="../../../libs/bootstrap/js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+        init_tabcontent('[tabid="chapter-menu"]');
+    });
+    function init_tabcontent(_this){
+        $(".tab-iframe").hide();
+        $(".tab-menu").removeClass("tab-active");
+        $(_this).addClass("tab-active");
+        var tabid=$(_this).attr("tabid");
+        var tabhref=$(_this).attr("tabhref");
+        if($("#"+tabid).length){
+            $("#"+tabid).show();
+        }else{
+            $(".book-info").find(".tab-content").append('<iframe class="tab-iframe" id="'+tabid+'" src="'+tabhref+'"'+
+            'width="100%" height="100%"  frameborder="no" border="0" marginwidth="0"'+
+            'marginheight="0" scrolling="no" allowtransparency="yes"></iframe>');
+        }
+    }
+</script>
+</body>
+</html>

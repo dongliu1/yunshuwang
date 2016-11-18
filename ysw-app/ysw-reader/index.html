@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>云书网</title>
+    <link rel="stylesheet" href="../libs/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../libs/jqueryui/jquery-ui.min.css">
+    <style>
+        html,body,.main-contain{width:100%;height: 100%;background: #e1e4e9;}
+        .bookcase{width:100%;height: 100%;padding-top:5em;padding-bottom: 1.5em;}
+        .bookcase>.book-img{padding:1.7em 2.1em;display: inline-block;width: 60em;height: 100%;background: url("img/book.jpg") no-repeat;background-size:100% 100%;}
+        .book-img td{width:16.5%;height: 25%;padding:1em 0.7em 2.8em;}
+        .book-cover{text-align:center;width:100%;height: 100%;-moz-user-select:none;-webkit-user-select:none;cursor:pointer;box-shadow: 5px 5px 5px #bbb;}
+        .book-cover>.book-line{position:relative;width:10%;height: 100%;background: #e8ddc9;box-shadow:inset 3px 0 5px #bbb ;float:left;border:1px solid #ccc;border-radius: 0.3em 0 0 0.3em;}
+        .book-cover>.book-text{position:relative;width:90%;height: 100%;background: #e8ddc9;border:1px solid #ccc;border-left:none;float:left;}
+        .book-name{width:100%;position:absolute;top:1em;}
+        .book-icon{width:100%;position:absolute;bottom:1.3em;}
+    </style>
+</head>
+<body>
+<div class="main-contain">
+    <nav class="navbar navbar-inverse navbar-fixed-top text-center" role="navigation">
+        <div class="container-fluid" style="width:65em;">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a class="navbar-brand" href="javascript:void(0)" style="font-size: large;font-weight: 700;">云书网</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">书架</a></li>
+                    <li><a href="#">手记</a></li>
+                </ul>
+                <form class="navbar-form navbar-left" role="search">
+                    <div class="form-group">
+                        <input type="text" class="form-control input-sm" placeholder="Search">
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-success">搜书</button>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="user-info"><a href="javascript:void(0)"  onclick="init_modal()">登录</a></li>
+                    <li class="user-info"><a href="../login.php?step=register&account=reader">注册</a></li>
+                    <li id="user-info" class="dropdown" style="display: none;">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">#<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="javascript:void(0)">个人中心</a></li>
+                            <li><a href="../ysw-author/index.php" id="author-center">作者中心</a></li>
+                            <li><a href="javascript:void(0)" onclick="init_exit()">退出</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <div class="bookcase text-center">
+        <div class="book-img">
+            <table width="100%" style="height: 100%;">
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!--dlg-->
+<div id="login-dlg" style="display: none;">
+    <div class="text-center">
+        <div class="input-group" style="margin:auto;width:80%;">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+            <input type="text" id="ysw-account" class="form-control" placeholder="请输入账号">
+        </div>
+    </div>
+    <div class="text-center">
+        <div class="input-group" style="margin:0.7em auto;width:80%;">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+            <input type="text" id="ysw-password" class="form-control" placeholder="请输入密码">
+        </div>
+    </div>
+    <div class="text-center">
+        <div class="error-tips text-danger" style="height: 1em;margin:0.5em 0;"></div>
+    </div>
+    <div class="text-center">
+        <div class="login" style="width:80%;margin:auto;">
+            <button class="btn btn-sm btn-block btn-success" onclick="init_book_login()">登录</button>
+        </div>
+    </div>
+</div>
+
+<script src="../libs/jquery/jQuery-2.1.4.min.js"></script>
+<script src="../libs/jcookie/jquery.cookie.js"></script>
+<script src="../libs/bootstrap/js/bootstrap.min.js"></script>
+<script src="../libs/jqueryui/jquery-ui.min.js"></script>
+<script>
+    var book_name=[{"bookname":"神之猎魔师"},{"bookname":"焚尽天穹"},{"bookname":"最强剑巫"},{"bookname":"来自异界的圣剑士"}]
+    $(function () {
+        init_account();
+        init_booksheft()
+    });
+
+    function init_exit() {
+        $.removeCookie('user_account', { path: '/' });
+        window.localStorage.removeItem("nickname");
+        $(".user-info").show();
+        $("#user-info").hide();
+    }
+
+    function init_account(){
+        var cookie=$.cookie("user_account");
+        if(cookie){
+            $(".user-info").hide();
+            $("#user-info").show();
+            $("#user-info").find(".dropdown-toggle").html(localStorage.getItem("nickname")+'<span class="caret"></span>');
+        }
+    }
+
+    function init_booksheft() {
+        for(var i=0;i<4;i++){
+            $(".book-img").find("tbody").append("<tr></tr>");
+            for(var j=0;j<6;j++){
+                var cur_num=i*6+j;
+                if(book_name.length>cur_num){
+                    var bk_name=book_name[cur_num]["bookname"];
+                    $(".book-img").find("tbody>tr:last").append('<td> <div class="book-cover clearfix">'+
+                        '<div class="book-line"></div>'+
+                            '<div class="book-text">'+
+                            '<div class="book-name"><b>'+bk_name+'</b></div>'+
+                            '<div class="book-icon"><b>－TXT－</b></div>'+
+                        '</div></td>');
+                }else{
+                    $(".book-img").find("tbody>tr:last").append("<td></td>");
+                }
+            }
+        }
+    }
+
+    function init_book_login() {
+        var account=$("#ysw-account").val();
+        var password=$("#ysw-password").val();
+        var _this=$("#login-dlg");
+        if($.trim(account)!=""&&$.trim(password)!=""){
+            console.log(account);
+            $.post("../ysw-api/login-api.php",{"account":account,"password":password},function(data){
+                console.log(data);
+                var parseJson=JSON.parse(data);
+                if(parseJson.success){
+                    var nickname=parseJson.nickname;
+                    $(".user-info").hide();
+                    $("#user-info").show();
+                    $("#user-info").find(".dropdown-toggle").html(nickname+'<span class="caret"></span>');
+                    $.cookie('user_account', account, { expires: 7, path: '/' });
+                    window.localStorage.setItem("nickname", nickname);
+                    $(_this).dialog('close');
+                }else{
+                    $(_this).find(".error-tips").html(parseJson.error);
+                }
+            })
+        }else{
+            $(_this).find(".error-tips").html("账号或密码不能为空")
+        }
+    }
+
+    function init_modal() {
+        $("#login-dlg").dialog({
+            modal:true,
+            width: 300,
+            height:'auto',
+            resizable:false,
+            title:"用户登录",
+            close:function(){
+                $(this).dialog('close');
+            }
+        })
+    }
+</script>
+</body>
+</html>

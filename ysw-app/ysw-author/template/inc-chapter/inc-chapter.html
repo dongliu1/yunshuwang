@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加章节</title>
+    <link rel="stylesheet" href="../../../libs/bootstrap/css/bootstrap.min.css">
+    <style>
+        html,body,.edit-contain{width:100%;height: 100%;}
+        .chapter-classify{width:100%;height: 5%;}
+        .chapter-edit{width:100%;height: 90%;text-align: center;}
+        .chapter-upload{width:100%;height: 5%;}
+        #edit-text{border:1px solid #ccc;width:50em;height: 48em;margin:2em 0;}
+
+    </style>
+</head>
+<body>
+<div class="edit-contain">
+    <div class="chapter-classify">
+        <b>分卷</b>
+        <select id="roll-select">
+            <option>卷一</option>
+            <option>卷二</option>
+            <option>卷三</option>
+            <option>卷四</option>
+            <option>卷五</option>
+        </select>
+        <input type="text" placeholder="请输入章节名">
+    </div>
+    <div class="chapter-edit">
+        <textarea id="edit-text"></textarea>
+    </div>
+    <div class="chapter-upload">
+        <a class="btn btn-sm btn-primary" href="javascript:void(0)">上传章节</a>
+        <a class="btn btn-sm btn-default" href="javascript:void(0)">取消上传</a>
+    </div>
+</div>
+<script src="../../../libs/jquery/jQuery-2.1.4.min.js"></script>
+<script src="../../../libs/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

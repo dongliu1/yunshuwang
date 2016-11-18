@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.min.css">
+    <style>
+        html,body,.login-contain{width:100%;height: 100%}
+        .lg-admin{background:#e0e0e0;width:21em;height: 25em;border-radius: 1em;border:1px solid #cccccc;padding:5em 1.5em;position: absolute;top:30%;right:30%;}
+        .lg-admin>.row{margin-top:2em;margin-left:0;margin-right: 0;padding:0!important;}
+        input{width:100%;height: 1.8em!important;border:1px solid #ccc;}
+        button{width:100%;}
+    </style>
+</head>
+<body>
+<div class="re-info"></div>
+<div class="login-contain">
+    <form id="login" name="login-form" action="ysw-author/index.php">
+        <div class="lg-admin">
+            <div class="row">
+                <div class="col-sm-4 text-left" style="padding: 0;">
+                    <label>作者账号</label>
+                </div>
+                <div class="col-sm-8 text-right" style="padding: 0;">
+                    <input name="useraccount" class="input-group input-sm" type="text" >
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 text-left" style="padding: 0;">
+                    <label>用户密码</label>
+                </div>
+                <div class="col-sm-8 text-right" style="padding: 0;">
+                    <input name="password" class="input-group input-sm" type="text" >
+                </div>
+            </div>
+            <div class="row">
+                <div class="btn btn-block btn-sm btn-success" onclick="login()">登录</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <p id="error-tips" class="text-danger"></p>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="libs/jquery/jQuery-2.1.4.min.js"></script>
+<script src="libs/jcookie/jquery.cookie.js"></script>
+<script src="libs/bootstrap/js/bootstrap.min.js"></script>
+<script>
+    var nickname=localStorage.getItem("user_account");
+    $(function () {
+        init_cookie_login()
+    });
+
+    function init_cookie_login() {
+        var cookie=$.cookie("user_account");
+        if(cookie){
+            $.post("../ysw-api/authentication-api.php",{"account":cookie},function (data) {
+                if(data)$("#login").submit();
+            });
+        }
+    }
+
+    function login() {
+        var useraccount=$("[name='useraccount']").val();
+        var password=$("[name='password']").val();
+        if($.trim(useraccount)!=""&&$.trim(password)!=""){
+            $.post("ysw-api/login-api.php",{"account":useraccount,"password":password},function(dt){
+                console.log(dt);
+                var result=$.parseJSON(dt);
+                console.log(result);
+                if(result.success){
+                    nickname=result.nickname;
+                    var account=result.account;
+                    var usertype=result.usertype;
+                    if(usertype==1){
+                        $("#error-tips").html("你还不是作者，<a href='javascript:void(0)' onclick='init_author("+account+")'>成为作者</a>？");
+                    }else{
+                        $.cookie('user_account', account, { expires: 7, path: '/' });
+                        window.localStorage.setItem("nickname", nickname);
+                        $("#login").submit();
+                    }
+                }else{
+                    $("#error-tips").html(result.error);
+                }
+            })
+        }else{
+            $("#error-tips").html("用户名或密码不能为空");
+        }
+    }
+
+    function init_author(user_account) {
+        //var user_account=$(_this).attr("db_account");
+        console.log(user_account);
+        $.post("ysw-api/updateAccount-api.php",{"account":user_account},function(dat){
+            if(dat=="True"){
+                $.cookie('user_account', user_account, { expires: 7, path: '/' });
+                window.localStorage.setItem("nickname", nickname);
+                $("#login").submit();
+            }else {
+                alert("申请失败");
+            }
+        })
+    }
+</script>
+</body>
+</html>
